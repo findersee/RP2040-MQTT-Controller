@@ -42,6 +42,14 @@
 *.idb
 *.pdb
 
+#Kicad
+*.bak
+*.tmp
+*.kicad_pcb-bak
+Electronics/3D/Parts/
+Electronics/Pico-MQTT-Controller/Pico-MQTT-Controller-backups
+fp-info-cache
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
