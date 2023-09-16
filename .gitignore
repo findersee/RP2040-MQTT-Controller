@@ -47,7 +47,6 @@
 *.tmp
 *.kicad_pcb-bak
 Electronics/3D/Parts/
-Electronics/Pico-MQTT-Controller/Pico-MQTT-Controller-backups
 fp-info-cache
 
 # Kernel Module Compile Results
@@ -58,3 +57,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+*-backups

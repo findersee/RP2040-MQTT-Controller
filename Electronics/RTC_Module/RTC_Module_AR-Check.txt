@@ -1,0 +1,11 @@
+AR checking written on:
+'C:\Users\akiku\GIT\RP2040-MQTT-Controller\Electronics\RTC_Module\RTC_Module_AR-Check.txt'
+'action_menu_annular_check.py'
+version = 1.7.2
+Testing PCB for Annular Rings
+TH Pads >= 0.15 Vias >= 0.15
+PHD margin on PTH = 0.1
+
+VIAS that Pass = 0; Fails = 0
+TH PADS that Pass = 9; Fails = 0
+NPTH PADS that Pass = 0; Fails = 0
