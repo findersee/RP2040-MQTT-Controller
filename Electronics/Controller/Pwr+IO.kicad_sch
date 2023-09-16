@@ -4,6 +4,13 @@
 
   (paper "A3")
 
+  (title_block
+    (title "MQTT Output Controller")
+    (date "2023-09-16")
+    (rev "1.0")
+    (company "findersee.fi")
+  )
+
   (lib_symbols
     (symbol "Connector:Screw_Terminal_01x07" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at 0 10.16 0)
@@ -2685,7 +2692,7 @@
     (property "Reference" "C403" (at 352.171 111.4973 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100uF" (at 352.171 113.4183 0)
+    (property "Value" "68uF" (at 352.171 113.4183 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:CP_Elec_6.3x5.8" (at 350.2152 116.84 0)
@@ -2694,7 +2701,7 @@
     (property "Datasheet" "~" (at 349.25 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Voltage" "16V" (at 352.171 115.57 0)
+    (property "Voltage" "35V" (at 352.171 115.57 0)
       (effects (font (size 1 1)) (justify left))
     )
     (pin "1" (uuid c7e9f2fa-6c83-492e-beb6-88b5dafa2060))

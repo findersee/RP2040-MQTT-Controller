@@ -4,6 +4,13 @@
 
   (paper "A3")
 
+  (title_block
+    (title "MQTT Output Controller")
+    (date "2023-09-16")
+    (rev "1.0")
+    (company "findersee.fi")
+  )
+
   (lib_symbols
     (symbol "Connector:USB_B_Micro" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at -5.08 11.43 0)

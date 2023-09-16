@@ -409,10 +409,10 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "similar_labels": "warning",
-      "simulation_model_issue": "error",
+      "simulation_model_issue": "ignore",
       "unannotated": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",
@@ -558,7 +558,7 @@
     ],
     [
       "7516d84f-d298-4f48-8b5d-a736b2d19d1b",
-      "Power+IO"
+      "Power and Output"
     ]
   ],
   "text_variables": {}

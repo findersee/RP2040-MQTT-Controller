@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "MQTT Output Controller")
+    (date "2023-09-16")
+    (rev "1.0")
+    (company "findersee.fi")
+  )
+
   (lib_symbols
   )
 
@@ -114,10 +121,10 @@
     (stroke (width 0.3) (type solid) (color 194 0 0 1))
     (fill (color 132 132 132 1.0000))
     (uuid 7516d84f-d298-4f48-8b5d-a736b2d19d1b)
-    (property "Sheetname" "Power+IO" (at 127 100.8884 0)
+    (property "Sheetname" "Power and Output" (at 127 100.8146 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheetfile" "Pwr+IO.kicad_sch" (at 127 165.6846 0)
+    (property "Sheetfile" "Pwr+IO.kicad_sch" (at 127 165.7584 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (pin "CH3" input (at 127 113.03 180)
@@ -140,8 +147,8 @@
   )
 
   (sheet (at 44.45 38.1) (size 44.45 127) (fields_autoplaced)
-    (stroke (width 0.5) (type solid) (color 0 194 0 1))
-    (fill (color 255 255 255 1.0000))
+    (stroke (width 0.5) (type solid) (color 194 0 194 1))
+    (fill (color 255 153 0 1.0000))
     (uuid b4def931-2d28-466e-81ae-3813755f1fa9)
     (property "Sheetname" "RP2040" (at 44.45 37.3884 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
