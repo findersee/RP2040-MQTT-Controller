@@ -2373,9 +2373,14 @@
     (pad "12" thru_hole oval locked (at -2.54 12.7 180) (size 1.7 1.7) (drill 1) (layers "*.Cu" "*.Mask")
       (net 1 "GND") (pinfunction "Pin_12") (pintype "passive") (zone_connect 1) (thermal_bridge_width 0.5) (thermal_gap 0.5) (tstamp ee9a02fd-8139-4a80-be89-5dce31f7173e))
     (model "${KICAD6_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_2x06_P2.54mm_Vertical.step" hide
-      (offset (xyz 0 0 0))
+      (offset (xyz 1 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
+    )
+    (model "C:/Users/akiku/GIT/RP2040-MQTT-Controller/Electronics/3D/RTC_Module.wrl"
+      (offset (xyz -1.24 -8.11 17.2))
+      (scale (xyz 0.3937 0.3937 0.3937))
+      (rotate (xyz -90 0 -90))
     )
   )
 

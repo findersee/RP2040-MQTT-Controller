@@ -429,7 +429,7 @@
       "netlist": "",
       "specctra_dsn": "",
       "step": "../3D/RTC_Module.step",
-      "vrml": ""
+      "vrml": "../3D/RTC_Module.wrl"
     },
     "page_layout_descr_file": ""
   },
