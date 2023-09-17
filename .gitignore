@@ -48,6 +48,8 @@
 *.kicad_pcb-bak
 Electronics/3D/Parts/
 fp-info-cache
+*-backups
+production
 
 # Kernel Module Compile Results
 *.mod*
@@ -57,5 +59,3 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-*-backups
-production

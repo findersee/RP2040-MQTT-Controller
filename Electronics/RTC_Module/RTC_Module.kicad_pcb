@@ -994,7 +994,7 @@
     (property "ki_keywords" "R resistor")
     (path "/d79c0c35-d963-4e94-a61a-0539da985653")
     (attr smd exclude_from_bom)
-    (fp_text reference "R106" (at -2.35 -0.15) (layer "F.SilkS")
+    (fp_text reference "R106" (at 0.04 1.1) (layer "F.SilkS")
         (effects (font (size 0.6 0.6) (thickness 0.15)))
       (tstamp 398e4bbd-7a07-4f25-a7dd-8afe45de1a26)
     )
@@ -1623,6 +1623,9 @@
 
   (gr_rect (start 70 103.5) (end 102.4 140.1)
     (stroke (width 0.1) (type default)) (fill none) (layer "Edge.Cuts") (tstamp f85cb9ad-8bdf-4ac0-81a5-850000cfe936))
+  (gr_text "Findersee.fi\n38/23" (at 73.2 109.9 90) (layer "B.SilkS") (tstamp 44119056-552b-4f18-adff-3242ba607c70)
+    (effects (font (size 1 1) (thickness 0.15)) (justify left bottom mirror))
+  )
   (dimension (type aligned) (layer "Cmts.User") (tstamp 3b7190b6-78d3-4a15-8034-d39927e02b25)
     (pts (xy 102.4 140.1) (xy 70 140.1))
     (height -13.6)
