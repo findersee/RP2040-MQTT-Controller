@@ -525,7 +525,7 @@
       "netlist": "",
       "specctra_dsn": "",
       "step": "../3D/Controller.step",
-      "vrml": "../3D/Controller.wrl"
+      "vrml": "../3D/Combined.wrl"
     },
     "page_layout_descr_file": ""
   },
