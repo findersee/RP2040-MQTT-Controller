@@ -56,7 +56,6 @@ add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
 
 # Add libraries in subdirectories
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries)
-#add_subdirectory(${FREERTOS_DIR})
 add_subdirectory(${MBEDTLS_DIR})
 add_subdirectory(${PORT_DIR})
 

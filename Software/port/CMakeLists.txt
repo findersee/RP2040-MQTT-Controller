@@ -34,3 +34,23 @@ target_include_directories(TIMER_FILES PUBLIC
 target_link_libraries(TIMER_FILES PRIVATE
         pico_stdlib      
         )
+
+# DS3234 Driver
+add_library(DS3234_Driver STATIC)
+
+target_sources(DS3234_Driver PUBLIC
+        ${PORT_DIR}/DS3234_Driver/DS3234_Driver.c
+        )
+
+target_include_directories(DS3234_Driver PUBLIC
+        ${PORT_DIR}/DS3234_Driver
+        ${PORT_DIR}
+        )
+
+target_link_libraries(DS3234_Driver PRIVATE
+        pico_stdlib
+        hardware_spi
+        hardware_dma
+        hardware_clocks
+        FREERTOS_FILES   
+        )

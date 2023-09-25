@@ -25,7 +25,6 @@
 
 
 
-
 /**
  * ----------------------------------------------------------------------------------------------------
  * Macros
@@ -88,6 +87,7 @@ static uint8_t g_mqtt_recv_buf[ETHERNET_BUF_MAX_SIZE] = {
 };
 static uint8_t g_mqtt_broker_ip[4] = {192, 168, 11, 3};
 static Network g_mqtt_network;
+static Network g_sntp_network;
 static MQTTClient g_mqtt_client;
 static MQTTPacket_connectData g_mqtt_packet_connect_data = MQTTPacket_connectData_initializer;
 static MQTTMessage g_mqtt_message;
@@ -128,8 +128,7 @@ int main()
     stdio_init_all();
 
 
-    // Enable W5500 clock for 25 MHz
-    clock_gpio_init(21, CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_SYS, 5);
+
 
     wizchip_spi_initialize();
     wizchip_cris_initialize();
@@ -319,6 +318,10 @@ static void set_clock_khz(void)
         PLL_SYS_KHZ * 1000,                               // Input frequency
         PLL_SYS_KHZ * 1000                                // Output (must be same as no divider)
     );
+
+    // Enable 25 MHz clock output on GPIO21
+    clock_gpio_init(21, CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_SYS, 5);
+
 }
 
 /* MQTT */
