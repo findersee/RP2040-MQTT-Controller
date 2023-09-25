@@ -7,6 +7,3 @@
 [submodule "Software/libraries/mbedtls"]
 	path = Software/libraries/mbedtls
 	url = https://github.com/Mbed-TLS/mbedtls
-[submodule "Software/libraries/pico-extras"]
-	path = Software/libraries/pico-extras
-	url = https://github.com/raspberrypi/pico-extras
