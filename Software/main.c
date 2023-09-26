@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 
@@ -20,6 +21,10 @@
 #include "MQTTClient.h"
 
 #include "timer.h"
+
+#include "DS3234_Driver.h"
+
+#include "mjson.h"
 
 //#include "RP2040-MQTT.h"
 
@@ -56,10 +61,10 @@
 #define MQTT_CLIENT_ID "rpi-pico"
 #define MQTT_USERNAME "wiznet"
 #define MQTT_PASSWORD "0123456789"
-#define MQTT_PUBLISH_TOPIC "publish_topic"
+#define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
 #define MQTT_PUBLISH_PAYLOAD "Hello, World!"
 #define MQTT_PUBLISH_PERIOD (1000 * 60) // 60 seconds
-#define MQTT_SUBSCRIBE_TOPIC "subscribe_topic"
+#define MQTT_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
 #define MQTT_KEEP_ALIVE 10 // 10 milliseconds
 
 /**
@@ -71,9 +76,9 @@
 static wiz_NetInfo g_net_info =
     {
         .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-        .ip = {192, 168, 2, 33},                     // IP address
+        .ip = {192, 168, 105, 11},                     // IP address
         .sn = {255, 255, 255, 0},                    // Subnet Mask
-        .gw = {192, 168, 2, 1},                     // Gateway
+        .gw = {192, 168, 105, 1},                     // Gateway
         .dns = {8, 8, 8, 8},                         // DNS server
         .dhcp = NETINFO_STATIC                       // DHCP enable/disable
 };
@@ -85,9 +90,9 @@ static uint8_t g_mqtt_send_buf[ETHERNET_BUF_MAX_SIZE] = {
 static uint8_t g_mqtt_recv_buf[ETHERNET_BUF_MAX_SIZE] = {
     0,
 };
-static uint8_t g_mqtt_broker_ip[4] = {192, 168, 11, 3};
+static uint8_t g_mqtt_broker_ip[4] = {192, 168, 105, 2};
 static Network g_mqtt_network;
-static Network g_sntp_network;
+//static Network g_sntp_network;
 static MQTTClient g_mqtt_client;
 static MQTTPacket_connectData g_mqtt_packet_connect_data = MQTTPacket_connectData_initializer;
 static MQTTMessage g_mqtt_message;
@@ -95,6 +100,16 @@ static uint8_t g_mqtt_connect_flag = 0;
 
 /* Timer  */
 static volatile uint32_t g_msec_cnt = 0;
+
+static bool flag1, flag2;
+static int count;
+
+static const struct json_attr_t json_attrs[] = {
+    {"count",   t_integer, .addr.integer = &count},
+    {"flag1",   t_boolean, .addr.boolean = &flag1,},
+    {"flag2",   t_boolean, .addr.boolean = &flag2,},
+    {NULL},
+};
 
 /**
  * ----------------------------------------------------------------------------------------------------
@@ -328,6 +343,9 @@ static void set_clock_khz(void)
 static void message_arrived(MessageData *msg_data)
 {
     MQTTMessage *message = msg_data->message;
+
+
+    json_read_object((uint8_t *)message->payload,json_attrs,NULL);
 
     printf("%.*s", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
 }

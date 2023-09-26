@@ -7,3 +7,6 @@
 [submodule "Software/libraries/mbedtls"]
 	path = Software/libraries/mbedtls
 	url = https://github.com/Mbed-TLS/mbedtls
+[submodule "Software/libraries/microjson"]
+	path = Software/libraries/microjson
+	url = https://gitlab.com/esr/microjson

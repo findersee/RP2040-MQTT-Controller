@@ -187,3 +187,14 @@ target_include_directories(FREERTOS_FILES PUBLIC
         ${FREERTOS_DIR}/include
         ${FREERTOS_DIR}/portable/GCC/ARM_CM0
         )
+
+# MICROJSON
+add_library(MICROJSON_FILES STATIC)
+
+target_sources(MICROJSON_FILES PUBLIC
+        ${MICROJSON_DIR}/mjson.c
+        )
+
+target_include_directories(MICROJSON_FILES PUBLIC
+        ${MICROJSON_DIR}
+        )

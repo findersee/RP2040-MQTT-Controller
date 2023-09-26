@@ -37,9 +37,11 @@ static inline void DS3234_UnSelect(void);
 void DS3234_init(void);
 void DS3234_ReadTime(TimeFormat *time);
 void DS3234_WriteTime(TimeFormat *time);
+uint8_t DS3234_ReadReg(uint8_t reg);
+uint8_t DS3234_ReadRegs(uint8_t reg,uint8_t *dst,uint8_t len);
+uint8_t DS3234_WriteRegs(uint8_t *buf,uint8_t len);
 
-
-//Time settings
+//Time Registers
 #define REGSECONDS 0x00
 #define REGMINUTES 0x01
 #define REGHOURS 0x02

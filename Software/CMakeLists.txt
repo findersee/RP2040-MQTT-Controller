@@ -40,6 +40,11 @@ if(NOT DEFINED MBEDTLS_DIR)
     message(STATUS "MBEDTLS_DIR = ${MBEDTLS_DIR}")
 endif()
 
+if(NOT DEFINED MICROJSON_DIR)
+    set(MICROJSON_DIR ${CMAKE_SOURCE_DIR}/libraries/microjson)
+    message(STATUS "MICROJSON_DIR = ${MICROJSON_DIR}")
+endif()
+
 if(NOT DEFINED PORT_DIR)
     set(PORT_DIR ${CMAKE_SOURCE_DIR}/port)
     message(STATUS "PORT_DIR = ${PORT_DIR}")
@@ -96,6 +101,8 @@ target_link_libraries(${PROJECT_NAME}
     mbedtls
     MQTT_FILES
     SNTP_FILES
+    MICROJSON_FILES
+    DS3234_Driver
 )
 
 # Enable usb output, disable uart output
