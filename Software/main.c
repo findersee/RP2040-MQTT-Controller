@@ -42,6 +42,9 @@
 #define YIELD_TASK_STACK_SIZE 512
 #define YIELD_TASK_PRIORITY 8
 
+#define UPTIME_TASK_STACK_SIZE 32
+#define UPTIME_TASK_PRIORITY 1
+
 /* Clock */
 #define PLL_SYS_KHZ (125 * 1000)
 
@@ -62,7 +65,7 @@
 #define MQTT_USERNAME "wiznet"
 #define MQTT_PASSWORD "0123456789"
 #define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
-#define MQTT_PUBLISH_PAYLOAD "Hello, World!"
+//#define MQTT_PUBLISH_PAYLOAD "Hello, World!"
 #define MQTT_PUBLISH_PERIOD (1000 * 60) // 60 seconds
 #define MQTT_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
 #define MQTT_KEEP_ALIVE 10 // 10 milliseconds
@@ -101,13 +104,27 @@ static uint8_t g_mqtt_connect_flag = 0;
 /* Timer  */
 static volatile uint32_t g_msec_cnt = 0;
 
-static bool flag1, flag2;
-static int count;
+struct RelaySet_t
+{
+    uint8_t Relay_Set;
+    uint8_t Time_Hour;
+    uint8_t Time_Minute;
+};
 
-static const struct json_attr_t json_attrs[] = {
-    {"count",   t_integer, .addr.integer = &count},
-    {"flag1",   t_boolean, .addr.boolean = &flag1,},
-    {"flag2",   t_boolean, .addr.boolean = &flag2,},
+TimeFormat_t RTC_Time;
+
+static volatile uint32_t uptime = 0;
+
+
+struct RelaySet_t RS_1[24];
+struct RelaySet_t RS_2[24];
+
+static int  JSON_RELAY_SET;
+static char JSON_TIME[6];
+
+static const struct json_attr_t json_relay_set_attrs[] = {
+    {"RelaySet", t_integer, .addr.integer = &JSON_RELAY_SET},
+    {"Time",   t_string, .addr.string = (char *)&JSON_TIME},
     {NULL},
 };
 
@@ -120,6 +137,7 @@ static const struct json_attr_t json_attrs[] = {
 void mqtt_task(void *argument);
 void SNTP_task(void *argument);
 void yield_task(void *argument);
+void uptime_task(void *argument);
 
 /* Clock */
 static void set_clock_khz(void);
@@ -142,8 +160,10 @@ int main()
 
     stdio_init_all();
 
+    DS3234_init();
 
 
+    DS3234_ReadTime(&RTC_Time);
 
     wizchip_spi_initialize();
     wizchip_cris_initialize();
@@ -155,7 +175,8 @@ int main()
     wizchip_1ms_timer_initialize(repeating_timer_callback);
 
     xTaskCreate(mqtt_task, "MQTT_Task", MQTT_TASK_STACK_SIZE, NULL, MQTT_TASK_PRIORITY, NULL);
-    xTaskCreate(yield_task, "YIEDL_Task", YIELD_TASK_STACK_SIZE, NULL, YIELD_TASK_PRIORITY, NULL);
+    xTaskCreate(yield_task, "YIELD_Task", YIELD_TASK_STACK_SIZE, NULL, YIELD_TASK_PRIORITY, NULL);
+    xTaskCreate(uptime_task, "UPTIME_Task", UPTIME_TASK_STACK_SIZE, NULL, UPTIME_TASK_PRIORITY, NULL);
 
     vTaskStartScheduler();
 
@@ -244,8 +265,11 @@ void mqtt_task(void *argument)
     g_mqtt_message.qos = QOS0;
     g_mqtt_message.retained = 0;
     g_mqtt_message.dup = 0;
-    g_mqtt_message.payload = MQTT_PUBLISH_PAYLOAD;
-    g_mqtt_message.payloadlen = strlen(g_mqtt_message.payload);
+    //g_mqtt_message.payload = MQTT_PUBLISH_PAYLOAD;
+    char PayloadBuf[30];
+    uint8_t PayloadLen = sprintf((char *)&PayloadBuf,"{\"UPTIME\":%u}",uptime);
+    g_mqtt_message.payload = &PayloadBuf;
+    g_mqtt_message.payloadlen = PayloadLen; //strlen(g_mqtt_message.payload);
 
     /* Subscribe */
     retval = MQTTSubscribe(&g_mqtt_client, MQTT_SUBSCRIBE_TOPIC, QOS0, message_arrived);
@@ -293,7 +317,16 @@ void SNTP_task(void *argument)
     
 }
 
+void uptime_task(void *argument){
 
+    while (1){
+
+        uptime++;
+        vTaskDelay(1000);
+
+    }
+
+}
 
 
 void yield_task(void *argument)
@@ -344,8 +377,7 @@ static void message_arrived(MessageData *msg_data)
 {
     MQTTMessage *message = msg_data->message;
 
-
-    json_read_object((uint8_t *)message->payload,json_attrs,NULL);
+    json_read_object((const char *)message->payload,json_relay_set_attrs,NULL);
 
     printf("%.*s", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
 }

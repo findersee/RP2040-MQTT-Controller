@@ -32,7 +32,7 @@ void DS3234_Init(){
     bi_decl(bi_1pin_with_name(PICO_DEFAULT_SPI_CSN_PIN, "RTC CS"));
 }
 
-void DS3234_ReadTime(TimeFormat *time){
+void DS3234_ReadTime(TimeFormat_t *time){
 
     uint8_t buf[7] = {0};
 
@@ -53,7 +53,7 @@ void DS3234_ReadTime(TimeFormat *time){
     time->year = (((buf[6]>>4)*10)+(buf[6]&0x0F));
 }
 
-void DS3234_WriteTime(TimeFormat *time){
+void DS3234_WriteTime(TimeFormat_t *time){
 
     uint8_t buf[8] = {0};
     buf[0] = REGSECONDS|0x80;
