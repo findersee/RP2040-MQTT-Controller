@@ -70,6 +70,13 @@
 #define MQTT_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
 #define MQTT_KEEP_ALIVE 10 // 10 milliseconds
 
+
+#define RTC_Interrupt 14
+#define RELAY1 7
+#define RELAY2 6
+#define RELAY3 5
+
+
 /**
  * ----------------------------------------------------------------------------------------------------
  * Variables
@@ -101,30 +108,46 @@ static MQTTPacket_connectData g_mqtt_packet_connect_data = MQTTPacket_connectDat
 static MQTTMessage g_mqtt_message;
 static uint8_t g_mqtt_connect_flag = 0;
 
+SemaphoreHandle_t AlarmInterruptSemaphore;
+
+
 /* Timer  */
 static volatile uint32_t g_msec_cnt = 0;
 
-struct RelaySet_t
+typedef struct _RelaySet
 {
     uint8_t Relay_Set;
     uint8_t Time_Hour;
     uint8_t Time_Minute;
-};
+} RelaySet_t;
 
 TimeFormat_t RTC_Time;
 
 static volatile uint32_t uptime = 0;
 
+static int JsonHours[24];
+static int JsonMinutes[24];
+static int JsonRelays[24];
 
-struct RelaySet_t RS_1[24];
-struct RelaySet_t RS_2[24];
+int8_t RelaysCurrent[24];
+int8_t RelaysNext[24];
 
 static int  JSON_RELAY_SET;
-static char JSON_TIME[6];
+static int  JSON_Count;   
+
+const struct json_attr_t relays_attrs[] = {
+    {"HOUR",	t_integer, .addr.integer = JsonHours},
+    {"MINUTE",	t_integer, .addr.integer = JsonMinutes},
+    {"RELAYS",	t_integer, .addr.integer = JsonRelays},
+    {NULL},
+};
 
 static const struct json_attr_t json_relay_set_attrs[] = {
     {"RelaySet", t_integer, .addr.integer = &JSON_RELAY_SET},
-    {"Time",   t_string, .addr.string = (char *)&JSON_TIME},
+    {"Settings",   t_array, .addr.array.element_type = t_object,
+		   	      .addr.array.arr.objects.subtype= relays_attrs,
+			      .addr.array.maxlen = 24,
+                  .addr.array.count = &JSON_Count},
     {NULL},
 };
 
@@ -136,6 +159,7 @@ static const struct json_attr_t json_relay_set_attrs[] = {
 /* Task */
 void mqtt_task(void *argument);
 void SNTP_task(void *argument);
+void RelayControl_task(void *argument);
 void yield_task(void *argument);
 void uptime_task(void *argument);
 
@@ -148,13 +172,15 @@ static void message_arrived(MessageData *msg_data);
 /* Timer  */
 static void repeating_timer_callback(void);
 
+/* RTC Interrupt*/
+void RTC_interrupt_callback(char *buf,uint32_t events);
+
 /**
  * ----------------------------------------------------------------------------------------------------
  * Main
  * ----------------------------------------------------------------------------------------------------
  */
-int main()
-{
+int main(){
     /* Initialize */
     set_clock_khz();
 
@@ -162,6 +188,19 @@ int main()
 
     DS3234_init();
 
+    gpio_init(RELAY1);
+    gpio_set_dir(RELAY1, GPIO_OUT);
+    gpio_put(RELAY1, 0);
+
+    gpio_init(RELAY2);
+    gpio_set_dir(RELAY2, GPIO_OUT);
+    gpio_put(RELAY2, 0);
+
+    gpio_init(RELAY3);
+    gpio_set_dir(RELAY3, GPIO_OUT);
+    gpio_put(RELAY3, 0);    
+
+    gpio_set_irq_enabled_with_callback(RTC_Interrupt, GPIO_IRQ_EDGE_FALL, true, (gpio_irq_callback_t)&RTC_interrupt_callback);
 
     DS3234_ReadTime(&RTC_Time);
 
@@ -174,10 +213,13 @@ int main()
 
     wizchip_1ms_timer_initialize(repeating_timer_callback);
 
+
+    AlarmInterruptSemaphore = xSemaphoreCreateBinary();
+
     xTaskCreate(mqtt_task, "MQTT_Task", MQTT_TASK_STACK_SIZE, NULL, MQTT_TASK_PRIORITY, NULL);
     xTaskCreate(yield_task, "YIELD_Task", YIELD_TASK_STACK_SIZE, NULL, YIELD_TASK_PRIORITY, NULL);
     xTaskCreate(uptime_task, "UPTIME_Task", UPTIME_TASK_STACK_SIZE, NULL, UPTIME_TASK_PRIORITY, NULL);
-
+    xTaskCreate(RelayControl_task, "RELAY_TASK",configMINIMAL_STACK_SIZE,NULL,6,NULL);
     vTaskStartScheduler();
 
     while (1)
@@ -185,24 +227,6 @@ int main()
         ;
     }
 }
-/*
-int main() {
-#ifndef PICO_DEFAULT_LED_PIN
-#warning blink example requires a board with a regular LED
-#else
-
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    while (true) {
-        gpio_put(LED_PIN, 1);
-        sleep_ms(250);
-        gpio_put(LED_PIN, 0);
-        sleep_ms(250);
-    }
-#endif
-}
-*/
 
 
 
@@ -213,8 +237,7 @@ int main() {
  * ----------------------------------------------------------------------------------------------------
  */
 /* Task */
-void mqtt_task(void *argument)
-{
+void mqtt_task(void *argument){
     uint8_t retval;
 
     network_initialize(g_net_info);
@@ -308,15 +331,38 @@ void mqtt_task(void *argument)
         vTaskDelay(MQTT_PUBLISH_PERIOD);
     }
 }
-
-void SNTP_task(void *argument)
-{
+/* NTP time task */
+void SNTP_task(void *argument){
 
 
 
     
 }
 
+/* Relay control task */
+void RelayControl_task(void *argument){
+
+    TimeFormat_t RelayTime;
+
+    while (1){
+        memset(&RelayTime,0,sizeof RelayTime);
+        xSemaphoreTake(AlarmInterruptSemaphore, portMAX_DELAY);
+        printf("Semaphore Taken");
+        gpio_put(PICO_DEFAULT_LED_PIN, true);// led for alarm
+
+        DS3234_ReadTime(&RelayTime);
+
+        if((RelaysCurrent[RelayTime.hours]&0x01) == 0x01){
+            gpio_put(RELAY1,(bool)(RelaysCurrent[RelayTime.hours]&0x02));
+            gpio_put(RELAY2,(bool)(RelaysCurrent[RelayTime.hours]&0x04));
+            gpio_put(RELAY3,(bool)(RelaysCurrent[RelayTime.hours]&0x08));
+        }
+        if(RelayTime.hours == 23)
+            memcpy(&RelaysCurrent,&RelaysNext,sizeof(RelaysNext));
+    }
+}
+
+/* Uptime task */
 void uptime_task(void *argument){
 
     while (1){
@@ -329,8 +375,7 @@ void uptime_task(void *argument){
 }
 
 
-void yield_task(void *argument)
-{
+void yield_task(void *argument){
     int retval;
 
     while (1)
@@ -353,8 +398,7 @@ void yield_task(void *argument)
 }
 
 /* Clock */
-static void set_clock_khz(void)
-{
+static void set_clock_khz(void){
     // set a system clock frequency in khz
     set_sys_clock_khz(PLL_SYS_KHZ, true);
 
@@ -373,17 +417,46 @@ static void set_clock_khz(void)
 }
 
 /* MQTT */
-static void message_arrived(MessageData *msg_data)
-{
+static void message_arrived(MessageData *msg_data){
     MQTTMessage *message = msg_data->message;
 
     json_read_object((const char *)message->payload,json_relay_set_attrs,NULL);
+
+
+    switch (JSON_RELAY_SET)
+    {
+    case 0:
+        for(uint8_t i=0;i < JSON_Count;i++){
+            RelaysCurrent[JsonHours[i]] = JsonRelays[i];
+        }
+        break;
+    case 1:
+        for(uint8_t i=0;i < JSON_Count;i++){
+            RelaysNext[JsonHours[i]] = JsonRelays[i];
+        }
+        break;
+    default:
+        break;
+    }
 
     printf("%.*s", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
 }
 
 /* Timer */
-void repeating_timer_callback(void)
-{
+void repeating_timer_callback(void){
     MilliTimer_Handler();
+}
+
+/* RTC Interrupt */
+void RTC_interrupt_callback(char *buf,uint32_t events){
+
+    BaseType_t xHigherPriorityTaskWoken;
+
+    /* Clear the interrupt. */
+
+    xHigherPriorityTaskWoken = pdFALSE;
+
+    xSemaphoreGiveFromISR( AlarmInterruptSemaphore, (BaseType_t *)&xHigherPriorityTaskWoken );
+
+    portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 }
