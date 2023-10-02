@@ -86,19 +86,17 @@ pico_add_extra_outputs(${PROJECT_NAME})
 # Link to pico_stdlib (gpio, time, etc. functions)
 target_link_libraries(${PROJECT_NAME} 
     pico_stdlib
-    hardware_pio
     hardware_clocks
     hardware_dma
-    hardware_i2c
-    hardware_timer
     hardware_spi
+    hardware_adc
     FREERTOS_FILES
     ETHERNET_FILES
     IOLIBRARY_FILES
     TIMER_FILES        
-    mbedcrypto
-    mbedx509
-    mbedtls
+#    mbedcrypto
+#    mbedx509
+#    mbedtls
     MQTT_FILES
     SNTP_FILES
     MICROJSON_FILES

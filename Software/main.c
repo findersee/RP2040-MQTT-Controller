@@ -7,6 +7,8 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
+#include "hardware/adc.h"
+
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -62,7 +64,7 @@
 
 /* MQTT */
 #define MQTT_CLIENT_ID "rpi-pico"
-#define MQTT_USERNAME "wiznet"
+#define MQTT_USERNAME "RP2040"
 #define MQTT_PASSWORD "0123456789"
 #define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
 //#define MQTT_PUBLISH_PAYLOAD "Hello, World!"
@@ -186,6 +188,10 @@ int main(){
 
     stdio_init_all();
 
+    adc_init();
+    adc_set_temp_sensor_enabled(true);
+    adc_select_input(4);
+
     DS3234_init();
 
     gpio_init(RELAY1);
@@ -288,14 +294,9 @@ void mqtt_task(void *argument){
     g_mqtt_message.qos = QOS0;
     g_mqtt_message.retained = 0;
     g_mqtt_message.dup = 0;
-    //g_mqtt_message.payload = MQTT_PUBLISH_PAYLOAD;
-    char PayloadBuf[30];
-    uint8_t PayloadLen = sprintf((char *)&PayloadBuf,"{\"UPTIME\":%u}",uptime);
-    g_mqtt_message.payload = &PayloadBuf;
-    g_mqtt_message.payloadlen = PayloadLen; //strlen(g_mqtt_message.payload);
 
     /* Subscribe */
-    retval = MQTTSubscribe(&g_mqtt_client, MQTT_SUBSCRIBE_TOPIC, QOS0, message_arrived);
+    retval = MQTTSubscribe(&g_mqtt_client, MQTT_SUBSCRIBE_TOPIC, QOS1, message_arrived);
 
     if (retval < 0)
     {
@@ -313,6 +314,17 @@ void mqtt_task(void *argument){
 
     while (1)
     {
+        uint16_t raw = adc_read();
+        const float conversion_factor = 3.3f / (1<<12);
+        float result = raw * conversion_factor;
+        float temp = 27 - (result -0.706)/0.001721;
+
+        char PayloadBuf[40];
+        uint8_t PayloadLen = sprintf((char *)&PayloadBuf,"{\"UPTIME\":%u,\"TEMP\":%.2f}",uptime,temp);
+
+        g_mqtt_message.payload = &PayloadBuf;
+        g_mqtt_message.payloadlen = PayloadLen;
+
         /* Publish */
         retval = MQTTPublish(&g_mqtt_client, MQTT_PUBLISH_TOPIC, &g_mqtt_message);
 
@@ -371,7 +383,6 @@ void uptime_task(void *argument){
         vTaskDelay(1000);
 
     }
-
 }
 
 

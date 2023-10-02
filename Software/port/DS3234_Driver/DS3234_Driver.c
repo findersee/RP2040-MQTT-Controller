@@ -41,6 +41,7 @@ void DS3234_Init(){
 
     bi_decl(bi_1pin_with_name(PICO_DEFAULT_SPI_CSN_PIN, "RTC CS"));
 
+    //Disable Temperature conversion to conserve energy
     uint8_t buf[2] = {0x93,0x01};
     spi_write_blocking(DS3234_Port,&buf,2);
 
