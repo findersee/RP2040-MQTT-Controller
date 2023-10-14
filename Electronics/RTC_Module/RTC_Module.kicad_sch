@@ -1529,7 +1529,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 5aab1181-237f-4ae7-a81d-935b8d566241)
   )
-  (label "RTC MISO" (at 73.66 86.36 180) (fields_autoplaced)
+  (label "RTC MISO" (at 73.66 76.2 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 67dee614-044e-4fc5-a686-d12946ebb35a)
   )
@@ -1553,7 +1553,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid a700a15d-2672-4044-8aee-52329cb66524)
   )
-  (label "RTC MOSI" (at 73.66 76.2 180) (fields_autoplaced)
+  (label "RTC MOSI" (at 73.66 86.36 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid a808400a-e70a-4c8a-b712-7f2da0c57be9)
   )
@@ -2037,8 +2037,8 @@
     (property "Datasheet" "~" (at 166.37 49.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid f0bec63e-7f33-482a-a8ae-22a2f03e5dcb))
-    (pin "2" (uuid 8e1feaf6-6bdc-4c7c-af15-40c769832b24))
+    (pin "1" (uuid 96e51d0b-b096-47dc-a8f1-9336468ae6c4))
+    (pin "2" (uuid 48de743b-63b5-4884-987d-fedd0125d564))
     (instances
       (project "Pico-MQTT-Controller"
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
