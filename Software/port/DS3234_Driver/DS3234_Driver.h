@@ -13,11 +13,11 @@
  */
 #define DS3234_Port spi1
 #define DS3234_MOSI 11
-#define DS3234_MISO 14
-#define DS3234_SCK 13
-#define DS3234_CS 12
+#define DS3234_MISO 8
+#define DS3234_SCK 10
+#define DS3234_CS 9
 
-#define DS3234_MISO 14
+//#define DS3234_MISO 14
 
 #include <stdint.h>
 
@@ -130,6 +130,7 @@ uint8_t DS3234_ReadRegs(uint8_t reg,uint8_t *dst,uint8_t len);
  * 
  */
 uint8_t DS3234_WriteRegs(uint8_t *buf,uint8_t len);
+
 
 //Time Registers
 #define REGSECONDS 0x00

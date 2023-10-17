@@ -8,7 +8,8 @@
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "hardware/adc.h"
-
+#include "hardware/flash.h"
+#include "hardware/watchdog.h"
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -47,6 +48,10 @@
 #define UPTIME_TASK_STACK_SIZE 32
 #define UPTIME_TASK_PRIORITY 1
 
+#define RELAY_CONTROL_TASK_STACK_SIZE 512
+#define RELAY_CONTROL_TASK_PRIORITY 6
+
+
 /* Clock */
 #define PLL_SYS_KHZ (125 * 1000)
 
@@ -67,9 +72,10 @@
 #define MQTT_USERNAME "RP2040"
 #define MQTT_PASSWORD "0123456789"
 #define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
+#define MQTT_RELAY_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
 //#define MQTT_PUBLISH_PAYLOAD "Hello, World!"
 #define MQTT_PUBLISH_PERIOD (1000 * 60) // 60 seconds
-#define MQTT_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
+#define MQTT_TIME_SUBSCRIBE_TOPIC "RP2040_MQTT_TIME"
 #define MQTT_KEEP_ALIVE 10 // 10 milliseconds
 
 
@@ -88,9 +94,9 @@
 static wiz_NetInfo g_net_info =
     {
         .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-        .ip = {192, 168, 105, 11},                     // IP address
+        .ip = {192, 168, 2, 11},                     // IP address
         .sn = {255, 255, 255, 0},                    // Subnet Mask
-        .gw = {192, 168, 105, 1},                     // Gateway
+        .gw = {192, 168, 2, 66},                     // Gateway
         .dns = {8, 8, 8, 8},                         // DNS server
         .dhcp = NETINFO_STATIC                       // DHCP enable/disable
 };
@@ -102,7 +108,7 @@ static uint8_t g_mqtt_send_buf[ETHERNET_BUF_MAX_SIZE] = {
 static uint8_t g_mqtt_recv_buf[ETHERNET_BUF_MAX_SIZE] = {
     0,
 };
-static uint8_t g_mqtt_broker_ip[4] = {192, 168, 105, 2};
+static uint8_t g_mqtt_broker_ip[4] = {192, 168, 2, 66};
 static Network g_mqtt_network;
 //static Network g_sntp_network;
 static MQTTClient g_mqtt_client;
@@ -131,6 +137,15 @@ static int JsonHours[24];
 static int JsonMinutes[24];
 static int JsonRelays[24];
 
+static int TimeHours;
+static int TimeMinutes;
+static int TimeSeconds;
+static int TimeYear;
+static int TimeMonth;
+static int TimeDate;
+static int TimeDay;
+
+
 int8_t RelaysCurrent[24];
 int8_t RelaysNext[24];
 
@@ -144,6 +159,18 @@ const struct json_attr_t relays_attrs[] = {
     {NULL},
 };
 
+static const struct json_attr_t time_attrs[] = {
+    {"HOURS",	t_integer, .addr.integer = &TimeHours},
+    {"MINUTES",	t_integer, .addr.integer = &TimeMinutes},
+    {"SECONDS",	t_integer, .addr.integer = &TimeSeconds},
+    {"YEAR",	t_integer, .addr.integer = &TimeYear},
+    {"MONTH",	t_integer, .addr.integer = &TimeMonth},
+    {"DATE",	t_integer, .addr.integer = &TimeDate},
+    {"DAY",	t_integer, .addr.integer = &TimeDay},
+    {NULL},
+};
+
+
 static const struct json_attr_t json_relay_set_attrs[] = {
     {"RelaySet", t_integer, .addr.integer = &JSON_RELAY_SET},
     {"Settings",   t_array, .addr.array.element_type = t_object,
@@ -152,6 +179,10 @@ static const struct json_attr_t json_relay_set_attrs[] = {
                   .addr.array.count = &JSON_Count},
     {NULL},
 };
+
+
+static uint32_t DevSerial;
+
 
 /**
  * ----------------------------------------------------------------------------------------------------
@@ -169,13 +200,18 @@ void uptime_task(void *argument);
 static void set_clock_khz(void);
 
 /* MQTT */
-static void message_arrived(MessageData *msg_data);
+static void Relay_message_arrived(MessageData *msg_data);
+static void Time_message_arrived(MessageData *msg_data);
+
 
 /* Timer  */
 static void repeating_timer_callback(void);
 
 /* RTC Interrupt*/
 void RTC_interrupt_callback(char *buf,uint32_t events);
+
+
+uint32_t macCalc(uint8_t *buf);
 
 /**
  * ----------------------------------------------------------------------------------------------------
@@ -186,12 +222,32 @@ int main(){
     /* Initialize */
     set_clock_khz();
 
+   // sleep_ms(5000);
+
+
+    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+    timer_hw->dbgpause = 0;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_put(LED_PIN, 1);
     stdio_init_all();
 
     adc_init();
     adc_set_temp_sensor_enabled(true);
     adc_select_input(4);
 
+    //sleep_ms(10000);
+    
+    uint8_t Serial[8];
+    flash_get_unique_id((uint8_t *)&Serial);
+
+    DevSerial = macCalc(&Serial);
+
+    g_net_info.mac[5] = Serial[0];
+    g_net_info.mac[4] = Serial[2];
+    g_net_info.mac[3] = Serial[4];
+
+    printf("Startup\n");
     DS3234_init();
 
     gpio_init(RELAY1);
@@ -206,9 +262,16 @@ int main(){
     gpio_set_dir(RELAY3, GPIO_OUT);
     gpio_put(RELAY3, 0);    
 
-    gpio_set_irq_enabled_with_callback(RTC_Interrupt, GPIO_IRQ_EDGE_FALL, true, (gpio_irq_callback_t)&RTC_interrupt_callback);
+    //Set internal pull-up on RTC interrupt pin
+    gpio_set_pulls(RTC_Interrupt,true,false);
+
+
 
     DS3234_ReadTime(&RTC_Time);
+
+    printf("Time is %d:%02d:%02d \n",RTC_Time.hours,RTC_Time.minutes,RTC_Time.seconds);
+
+    //DS3234_ReadTime(&RTC_Time);
 
     wizchip_spi_initialize();
     wizchip_cris_initialize();
@@ -225,7 +288,7 @@ int main(){
     xTaskCreate(mqtt_task, "MQTT_Task", MQTT_TASK_STACK_SIZE, NULL, MQTT_TASK_PRIORITY, NULL);
     xTaskCreate(yield_task, "YIELD_Task", YIELD_TASK_STACK_SIZE, NULL, YIELD_TASK_PRIORITY, NULL);
     xTaskCreate(uptime_task, "UPTIME_Task", UPTIME_TASK_STACK_SIZE, NULL, UPTIME_TASK_PRIORITY, NULL);
-    xTaskCreate(RelayControl_task, "RELAY_TASK",configMINIMAL_STACK_SIZE,NULL,6,NULL);
+    xTaskCreate(RelayControl_task, "RELAY_TASK",RELAY_CONTROL_TASK_STACK_SIZE,NULL,RELAY_CONTROL_TASK_PRIORITY,NULL);
     vTaskStartScheduler();
 
     while (1)
@@ -250,18 +313,26 @@ void mqtt_task(void *argument){
 
     /* Get network information */
     print_network_information(g_net_info);
-
+    uint8_t failCnt = 1;
     NewNetwork(&g_mqtt_network, SOCKET_MQTT);
-    retval = ConnectNetwork(&g_mqtt_network, g_mqtt_broker_ip, PORT_MQTT);
+    while (1){
+        retval = ConnectNetwork(&g_mqtt_network, g_mqtt_broker_ip, PORT_MQTT);
 
-    if (retval != 1)
-    {
-        printf(" Network connect failed\n");
-
-        while (1)
+        if (retval != 1)
         {
-            vTaskDelay(1000 * 1000);
+            printf(" Network connect failed, fail count: %d\n",failCnt);
+            vTaskDelay(10 * 1000);
+            failCnt ++;
+            if(failCnt > 11){
+                watchdog_reboot(0,0,0);    
+            }
         }
+        if (retval){
+            printf(" Network connected\n");
+            break;
+        }
+           
+
     }
 
     /* Initialize MQTT client */
@@ -284,7 +355,8 @@ void mqtt_task(void *argument){
 
         while (1)
         {
-            vTaskDelay(1000 * 1000);
+            watchdog_reboot(0,0,0); 
+
         }
     }
 
@@ -296,19 +368,33 @@ void mqtt_task(void *argument){
     g_mqtt_message.dup = 0;
 
     /* Subscribe */
-    retval = MQTTSubscribe(&g_mqtt_client, MQTT_SUBSCRIBE_TOPIC, QOS1, message_arrived);
+    retval = MQTTSubscribe(&g_mqtt_client, MQTT_RELAY_SUBSCRIBE_TOPIC, QOS1, Relay_message_arrived);
 
     if (retval < 0)
     {
-        printf(" Subscribe failed : %d\n", retval);
+        printf(" Relay Subscribe failed : %d\n", retval);
 
         while (1)
         {
-            vTaskDelay(1000 * 1000);
+            watchdog_reboot(0,0,0);
         }
     }
 
-    printf(" Subscribed\n");
+    printf(" Subscribed Relay messages\n");
+
+    retval = MQTTSubscribe(&g_mqtt_client, MQTT_TIME_SUBSCRIBE_TOPIC, QOS1, Time_message_arrived);
+
+    if (retval < 0)
+    {
+        printf(" Time Subscribe failed : %d\n", retval);
+
+        while (1)
+        {
+            watchdog_reboot(0,0,0);
+        }
+    }
+
+    printf(" Subscribed Time messages\n");
 
     g_mqtt_connect_flag = 1;
 
@@ -331,14 +417,16 @@ void mqtt_task(void *argument){
         if (retval < 0)
         {
             printf(" Publish failed : %d\n", retval);
-
+            /*
             while (1)
             {
                 vTaskDelay(1000 * 1000);
             }
+
+            */
         }
 
-        printf(" Published\n");
+        //printf(" Published\n");
 
         vTaskDelay(MQTT_PUBLISH_PERIOD);
     }
@@ -356,10 +444,22 @@ void RelayControl_task(void *argument){
 
     TimeFormat_t RelayTime;
 
+    //Set Alarm 1 to activate when minutes and seconds are 0 
+    uint8_t spiBuf[10] = {0x87,0x00,0x00,0x80,0x80,0x00,0x00,0x00,0x1D,0xC8};
+
+    DS3234_WriteRegs((uint8_t *)&spiBuf,sizeof(spiBuf));
+
+    //Activate interrupt after alarm has been initialized
+    gpio_set_irq_enabled_with_callback(RTC_Interrupt, GPIO_IRQ_EDGE_FALL, true, (gpio_irq_callback_t)&RTC_interrupt_callback);    
+
     while (1){
         memset(&RelayTime,0,sizeof RelayTime);
         xSemaphoreTake(AlarmInterruptSemaphore, portMAX_DELAY);
-        printf("Semaphore Taken");
+        printf("Semaphore Taken \n");
+
+        spiBuf[0] = 0x8F;
+        spiBuf[1] = 0xC8;
+        DS3234_WriteRegs((uint8_t *)&spiBuf,2);
         gpio_put(PICO_DEFAULT_LED_PIN, true);// led for alarm
 
         DS3234_ReadTime(&RelayTime);
@@ -377,11 +477,16 @@ void RelayControl_task(void *argument){
 /* Uptime task */
 void uptime_task(void *argument){
 
+    //bool ledState = false;
+    //watchdog_enable(1200);
     while (1){
 
         uptime++;
-        vTaskDelay(1000);
-
+        gpio_put(PICO_DEFAULT_LED_PIN, 0);
+        vTaskDelay(200);
+        gpio_put(PICO_DEFAULT_LED_PIN, 1);
+        watchdog_update();
+        vTaskDelay(800);
     }
 }
 
@@ -396,7 +501,7 @@ void yield_task(void *argument){
             if ((retval = MQTTYield(&g_mqtt_client, g_mqtt_packet_connect_data.keepAliveInterval)) < 0)
             {
                 printf(" Yield error : %d\n", retval);
-
+                watchdog_reboot(0,0,0); 
                 while (1)
                 {
                     vTaskDelay(1000 * 1000);
@@ -423,12 +528,12 @@ static void set_clock_khz(void){
     );
 
     // Enable 25 MHz clock output on GPIO21
-    clock_gpio_init(21, CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_SYS, 5);
+    clock_gpio_init(23, CLOCKS_CLK_GPOUT0_CTRL_AUXSRC_VALUE_CLK_SYS, 5);
 
 }
 
 /* MQTT */
-static void message_arrived(MessageData *msg_data){
+static void Relay_message_arrived(MessageData *msg_data){
     MQTTMessage *message = msg_data->message;
 
     json_read_object((const char *)message->payload,json_relay_set_attrs,NULL);
@@ -450,8 +555,35 @@ static void message_arrived(MessageData *msg_data){
         break;
     }
 
-    printf("%.*s", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
+    printf("%.*s \n", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
 }
+
+static void Time_message_arrived(MessageData *msg_data){
+    TimeFormat_t SetTime;
+    MQTTMessage *message = msg_data->message;
+    json_read_object((const char *)message->payload,time_attrs,NULL);
+
+    SetTime.hours = TimeHours;
+    SetTime.minutes = TimeMinutes;
+    SetTime.seconds = TimeSeconds;
+    SetTime.year = TimeYear;
+    SetTime.month = TimeMonth;
+    SetTime.date = TimeDate;
+    SetTime.day = TimeDay;
+
+
+    DS3234_WriteTime(&SetTime);
+
+    memset(&SetTime,0,sizeof(SetTime));
+
+    DS3234_ReadTime(&SetTime);
+
+    printf("Time is %02d:%02d:%02d \n",SetTime.hours,SetTime.minutes,SetTime.seconds);
+
+    //printf("%.*s \n", (uint32_t)message->payloadlen, (uint8_t *)message->payload);
+}
+
+
 
 /* Timer */
 void repeating_timer_callback(void){
@@ -470,4 +602,18 @@ void RTC_interrupt_callback(char *buf,uint32_t events){
     xSemaphoreGiveFromISR( AlarmInterruptSemaphore, (BaseType_t *)&xHigherPriorityTaskWoken );
 
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+}
+
+uint32_t macCalc(uint8_t *buf){
+
+    uint32_t calcData = 0;
+
+    for(uint8_t Loop = 0;Loop <= 8;Loop++){
+        calcData ^= buf[Loop];
+        calcData <<= 1;
+        //printf(" CalcData %X, buffer %X \n",calcData,buf[Loop]);
+    }
+    calcData &= 0xFFFFFFFF;
+    
+    return calcData;
 }

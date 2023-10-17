@@ -90,6 +90,8 @@ target_link_libraries(${PROJECT_NAME}
     hardware_dma
     hardware_spi
     hardware_adc
+    hardware_flash
+    hardware_watchdog
     FREERTOS_FILES
     ETHERNET_FILES
     IOLIBRARY_FILES
@@ -104,5 +106,5 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 # Enable usb output, disable uart output
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 0)
+pico_enable_stdio_uart(${PROJECT_NAME} 1)

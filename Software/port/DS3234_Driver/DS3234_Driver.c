@@ -25,15 +25,7 @@ static inline void DS3234_UnSelect(void)
     gpio_put(DS3234_CS, 1);
 }
 
-void DS3234_Init(){
-
-    spi_init(DS3234_Port, 2000 * 1000);
-
-    gpio_set_function(DS3234_MOSI, GPIO_FUNC_SPI);
-    gpio_set_function(DS3234_MISO, GPIO_FUNC_SPI);
-    gpio_set_function(DS3234_SCK, GPIO_FUNC_SPI);
-
-    bi_decl(bi_3pins_with_func(DS3234_MISO, DS3234_MOSI, DS3234_SCK, GPIO_FUNC_SPI));
+void DS3234_init(){
 
     gpio_init(DS3234_CS);
     gpio_set_dir(DS3234_CS, GPIO_OUT);
@@ -41,21 +33,45 @@ void DS3234_Init(){
 
     bi_decl(bi_1pin_with_name(PICO_DEFAULT_SPI_CSN_PIN, "RTC CS"));
 
+    spi_init(DS3234_Port, 200 * 1000);
+    spi_set_format(DS3234_Port,8,SPI_CPOL_0,SPI_CPHA_1,SPI_MSB_FIRST);
+    
+    gpio_set_function(DS3234_MOSI, GPIO_FUNC_SPI);
+    gpio_set_function(DS3234_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(DS3234_SCK, GPIO_FUNC_SPI);
+
+    bi_decl(bi_3pins_with_func(DS3234_MISO, DS3234_MOSI, DS3234_SCK, GPIO_FUNC_SPI));
+
+
+
+
+
     //Disable Temperature conversion to conserve energy
     uint8_t buf[2] = {0x93,0x01};
-    spi_write_blocking(DS3234_Port,&buf,2);
+    DS3234_Select();
+    spi_write_blocking(DS3234_Port,(uint8_t *)&buf,2);
+
+    while(spi_is_busy(DS3234_Port))
+        asm("nop");
+
+    DS3234_UnSelect();    
 
 }
 
 void DS3234_ReadTime(TimeFormat_t *time){
 
-    uint8_t buf[7] = {0};
+    volatile uint8_t buf[7] = {0};
 
     DS3234_Select();
     //Write Address byte
     spi_write_blocking(DS3234_Port,REGSECONDS,1);    
     //Read bytes out
     spi_read_blocking(DS3234_Port,0,(uint8_t *)&buf,7);
+    
+    
+    while(spi_is_busy(DS3234_Port))
+        asm("nop");
+
     DS3234_UnSelect();
 
     time->seconds = (((buf[0]>>4)*10)+(buf[0]&0x0F));
@@ -70,7 +86,7 @@ void DS3234_ReadTime(TimeFormat_t *time){
 
 void DS3234_WriteTime(TimeFormat_t *time){
 
-    uint8_t buf[8] = {0};
+    volatile uint8_t buf[8] = {0};
     buf[0] = REGSECONDS|0x80;
     buf[1] = (time->seconds/10)<<4|(time->seconds%10);
     buf[2] = (time->minutes/10)<<4|(time->minutes%10);
@@ -78,13 +94,13 @@ void DS3234_WriteTime(TimeFormat_t *time){
     buf[4] = (time->day);
     buf[5] = (time->date/10)<<4|(time->date%10);
     buf[6] = (time->month/10)<<4|(time->month%10);
-    buf[7] = (time->month/10)<<4|(time->month%10);
+    buf[7] = (time->year/10)<<4|(time->year%10);
 
     DS3234_Select();
-
-    //spi_write_blocking(DS3234_Port,REGSECONDS,1);
     spi_write_blocking(DS3234_Port,(uint8_t *)&buf,8);
 
+    while(spi_is_busy(DS3234_Port))
+        asm("nop");
     DS3234_UnSelect();
 }
 
