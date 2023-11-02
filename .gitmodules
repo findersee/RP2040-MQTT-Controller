@@ -10,3 +10,6 @@
 [submodule "Software/libraries/microjson"]
 	path = Software/libraries/microjson
 	url = https://gitlab.com/esr/microjson
+[submodule "Electronics/kicadLib"]
+	path = Electronics/kicadLib
+	url = https://github.com/findersee/kicadLib

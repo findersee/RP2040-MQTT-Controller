@@ -80,9 +80,14 @@
 
 
 #define RTC_Interrupt 14
-#define RELAY1 7
-#define RELAY2 6
-#define RELAY3 5
+
+const uint8_t RELAY1=7; 
+const uint8_t RELAY2=6;
+const uint8_t RELAY3=5;
+
+//#define RELAY1 7/
+//#define RELAY2 6
+//#define RELAY3 5
 
 
 /**
@@ -134,7 +139,6 @@ TimeFormat_t RTC_Time;
 static volatile uint32_t uptime = 0;
 
 static int JsonHours[24];
-static int JsonMinutes[24];
 static int JsonRelays[24];
 
 static int TimeHours;
@@ -154,7 +158,6 @@ static int  JSON_Count;
 
 const struct json_attr_t relays_attrs[] = {
     {"HOUR",	t_integer, .addr.integer = JsonHours},
-    {"MINUTE",	t_integer, .addr.integer = JsonMinutes},
     {"RELAYS",	t_integer, .addr.integer = JsonRelays},
     {NULL},
 };
@@ -230,6 +233,16 @@ int main(){
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1);
+
+    gpio_init(RELAY1);
+    gpio_set_dir(RELAY1, GPIO_OUT);
+
+    gpio_init(RELAY2);
+    gpio_set_dir(RELAY2, GPIO_OUT);
+
+    gpio_init(RELAY3);
+    gpio_set_dir(RELAY3, GPIO_OUT);
+
     stdio_init_all();
 
     adc_init();
@@ -241,7 +254,7 @@ int main(){
     uint8_t Serial[8];
     flash_get_unique_id((uint8_t *)&Serial);
 
-    DevSerial = macCalc(&Serial);
+    DevSerial = macCalc((uint8_t *)&Serial);
 
     g_net_info.mac[5] = Serial[0];
     g_net_info.mac[4] = Serial[2];
@@ -250,17 +263,7 @@ int main(){
     printf("Startup\n");
     DS3234_init();
 
-    gpio_init(RELAY1);
-    gpio_set_dir(RELAY1, GPIO_OUT);
-    gpio_put(RELAY1, 0);
-
-    gpio_init(RELAY2);
-    gpio_set_dir(RELAY2, GPIO_OUT);
-    gpio_put(RELAY2, 0);
-
-    gpio_init(RELAY3);
-    gpio_set_dir(RELAY3, GPIO_OUT);
-    gpio_put(RELAY3, 0);    
+  
 
     //Set internal pull-up on RTC interrupt pin
     gpio_set_pulls(RTC_Interrupt,true,false);
@@ -269,7 +272,7 @@ int main(){
 
     DS3234_ReadTime(&RTC_Time);
 
-    printf("Time is %d:%02d:%02d \n",RTC_Time.hours,RTC_Time.minutes,RTC_Time.seconds);
+    printf("Time is %d:%02d:%02d Date: %02d/%02d/%02d \n",RTC_Time.hours,RTC_Time.minutes,RTC_Time.seconds,RTC_Time.date,RTC_Time.month,RTC_Time.year);
 
     //DS3234_ReadTime(&RTC_Time);
 
@@ -460,7 +463,6 @@ void RelayControl_task(void *argument){
         spiBuf[0] = 0x8F;
         spiBuf[1] = 0xC8;
         DS3234_WriteRegs((uint8_t *)&spiBuf,2);
-        gpio_put(PICO_DEFAULT_LED_PIN, true);// led for alarm
 
         DS3234_ReadTime(&RelayTime);
 
@@ -469,8 +471,11 @@ void RelayControl_task(void *argument){
             gpio_put(RELAY2,(bool)(RelaysCurrent[RelayTime.hours]&0x04));
             gpio_put(RELAY3,(bool)(RelaysCurrent[RelayTime.hours]&0x08));
         }
-        if(RelayTime.hours == 23)
+        
+        if(RelayTime.hours == 23){
             memcpy(&RelaysCurrent,&RelaysNext,sizeof(RelaysNext));
+            memset(&RelaysNext,0,sizeof(RelaysNext));
+        }
     }
 }
 
@@ -563,14 +568,18 @@ static void Time_message_arrived(MessageData *msg_data){
     MQTTMessage *message = msg_data->message;
     json_read_object((const char *)message->payload,time_attrs,NULL);
 
+    DS3234_ReadTime(&SetTime);
+
     SetTime.hours = TimeHours;
     SetTime.minutes = TimeMinutes;
     SetTime.seconds = TimeSeconds;
+
+    if((TimeYear != 0) && (TimeMonth != 0) && (TimeDate != 0)){
     SetTime.year = TimeYear;
     SetTime.month = TimeMonth;
     SetTime.date = TimeDate;
-    SetTime.day = TimeDay;
-
+    SetTime.day = TimeDay; 
+    }
 
     DS3234_WriteTime(&SetTime);
 
