@@ -71,23 +71,20 @@
 #define MQTT_CLIENT_ID "rpi-pico"
 #define MQTT_USERNAME "RP2040"
 #define MQTT_PASSWORD "0123456789"
-#define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
-#define MQTT_RELAY_SUBSCRIBE_TOPIC "RP2040_MQTT_SET"
+#define MQTT_BASE_TOPIC "RP2040_MQTT"
+//#define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
+#define MQTT_RELAY_BASE_TOPIC "RP2040_MQTT_SET"
 //#define MQTT_PUBLISH_PAYLOAD "Hello, World!"
 #define MQTT_PUBLISH_PERIOD (1000 * 60) // 60 seconds
-#define MQTT_TIME_SUBSCRIBE_TOPIC "RP2040_MQTT_TIME"
+#define MQTT_TIME_BASE_TOPIC "RP2040_MQTT_TIME"
 #define MQTT_KEEP_ALIVE 10 // 10 milliseconds
 
 
 #define RTC_Interrupt 14
 
-const uint8_t RELAY1=7; 
-const uint8_t RELAY2=6;
-const uint8_t RELAY3=5;
-
-//#define RELAY1 7/
-//#define RELAY2 6
-//#define RELAY3 5
+#define RELAY1 7
+#define RELAY2 6
+#define RELAY3 5
 
 
 /**
@@ -187,6 +184,21 @@ static const struct json_attr_t json_relay_set_attrs[] = {
 static uint32_t DevSerial;
 
 
+
+char MQTT_PUBLISH_text[30];
+char MQTT_SET_text[33];
+char MQTT_TIME_text[34];
+const char * MQTT_PUBLISH_TOPIC = (const char *)&MQTT_PUBLISH_text;
+const char * MQTT_RELAY_SUBSCRIBE_TOPIC = (const char *)&MQTT_SET_text;
+const char * MQTT_TIME_SUBSCRIBE_TOPIC = (const char *)&MQTT_TIME_text;
+
+/*
+const uint8_t RELAY1=7; 
+const uint8_t RELAY2=6;
+const uint8_t RELAY3=5;
+*/
+
+
 /**
  * ----------------------------------------------------------------------------------------------------
  * Functions
@@ -259,6 +271,11 @@ int main(){
     g_net_info.mac[5] = Serial[0];
     g_net_info.mac[4] = Serial[2];
     g_net_info.mac[3] = Serial[4];
+
+    sprintf((char *)&MQTT_PUBLISH_text,"%s_%02X%02X%02X%02X%02X%02X%02X%02X",MQTT_BASE_TOPIC,Serial[7],Serial[6],Serial[5],Serial[4],Serial[3],Serial[2],Serial[1],Serial[0]);
+    sprintf((char *)&MQTT_SET_text,"%s_%02X%02X%02X%02X%02X%02X%02X%02X",MQTT_RELAY_BASE_TOPIC,Serial[7],Serial[6],Serial[5],Serial[4],Serial[3],Serial[2],Serial[1],Serial[0]);
+    sprintf((char *)&MQTT_TIME_text,"%s_%02X%02X%02X%02X%02X%02X%02X%02X",MQTT_TIME_BASE_TOPIC,Serial[7],Serial[6],Serial[5],Serial[4],Serial[3],Serial[2],Serial[1],Serial[0]);
+
 
     printf("Startup\n");
     DS3234_init();
@@ -415,7 +432,7 @@ void mqtt_task(void *argument){
         g_mqtt_message.payloadlen = PayloadLen;
 
         /* Publish */
-        retval = MQTTPublish(&g_mqtt_client, MQTT_PUBLISH_TOPIC, &g_mqtt_message);
+        retval = MQTTPublish(&g_mqtt_client,MQTT_PUBLISH_TOPIC, &g_mqtt_message);
 
         if (retval < 0)
         {
