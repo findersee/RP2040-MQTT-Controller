@@ -34,9 +34,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.71,
-          "height": 1.27,
-          "width": 1.27
+          "drill": 0.0,
+          "height": 3.2,
+          "width": 3.2
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -456,7 +456,7 @@
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
         "name": "50 Ohm",
-        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "pcb_color": "rgb(104, 215, 255)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.35,
         "via_diameter": 0.6,
