@@ -69,8 +69,8 @@
 
 /* MQTT */
 #define MQTT_CLIENT_ID "rpi-pico"
-#define MQTT_USERNAME "RP2040"
-#define MQTT_PASSWORD "0123456789"
+#define MQTT_USERNAME "Rp2040"
+#define MQTT_PASSWORD "RaspiMqtt"
 #define MQTT_BASE_TOPIC "RP2040_MQTT"
 //#define MQTT_PUBLISH_TOPIC "RP2040_MQTT"
 #define MQTT_RELAY_BASE_TOPIC "RP2040_MQTT_SET"
@@ -181,9 +181,6 @@ static const struct json_attr_t json_relay_set_attrs[] = {
 };
 
 
-static uint32_t DevSerial;
-
-
 
 char MQTT_PUBLISH_text[30];
 char MQTT_SET_text[33];
@@ -266,7 +263,6 @@ int main(){
     uint8_t Serial[8];
     flash_get_unique_id((uint8_t *)&Serial);
 
-    DevSerial = macCalc((uint8_t *)&Serial);
 
     g_net_info.mac[5] = Serial[0];
     g_net_info.mac[4] = Serial[2];
@@ -277,7 +273,7 @@ int main(){
     sprintf((char *)&MQTT_TIME_text,"%s_%02X%02X%02X%02X%02X%02X%02X%02X",MQTT_TIME_BASE_TOPIC,Serial[7],Serial[6],Serial[5],Serial[4],Serial[3],Serial[2],Serial[1],Serial[0]);
 
 
-    printf("Startup\n");
+    printf("Startup Serial: %02X%02X%02X%02X%02X%02X%02X%02X\n",Serial[7],Serial[6],Serial[5],Serial[4],Serial[3],Serial[2],Serial[1],Serial[0]);
     DS3234_init();
 
   
@@ -424,9 +420,10 @@ void mqtt_task(void *argument){
         const float conversion_factor = 3.3f / (1<<12);
         float result = raw * conversion_factor;
         float temp = 27 - (result -0.706)/0.001721;
-
-        char PayloadBuf[40];
-        uint8_t PayloadLen = sprintf((char *)&PayloadBuf,"{\"UPTIME\":%u,\"TEMP\":%.2f}",uptime,temp);
+        uint8_t RelayStatus = gpio_get(RELAY1)+((uint8_t)gpio_get(RELAY2)*2)+((uint8_t)gpio_get(RELAY3)*4);
+        DS3234_ReadTime(&RTC_Time);
+        char PayloadBuf[67];
+        uint8_t PayloadLen = sprintf((char *)&PayloadBuf,"{\"UPTIME\":%u,\"TEMP\":%.2f,\"TIME\":\"%d:%02d:%02d\",\"OUTPUT\":%d}",uptime,temp,RTC_Time.hours,RTC_Time.minutes,RTC_Time.seconds,RelayStatus);
 
         g_mqtt_message.payload = &PayloadBuf;
         g_mqtt_message.payloadlen = PayloadLen;

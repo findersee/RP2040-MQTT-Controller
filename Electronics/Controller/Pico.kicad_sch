@@ -2563,7 +2563,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 101.6 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 02d39ccd-f2c7-420c-a279-8be9b4c2023c)
-    (property "Reference" "C401" (at 103.9241 46.2075 0)
+    (property "Reference" "C215" (at 103.9241 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 103.9241 48.6317 0)
@@ -2585,9 +2585,6 @@
     (pin "2" (uuid a19cf615-0d29-41bc-94eb-945cfc1a8bf0))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C215") (unit 1)
         )
@@ -2603,7 +2600,7 @@
   (symbol (lib_id "Device:LED_Small_Filled") (at 233.68 110.49 270) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0c66f65c-22d6-425d-984f-674e634621d2)
-    (property "Reference" "D303" (at 236.22 107.95 90)
+    (property "Reference" "D201" (at 236.22 107.95 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "White" (at 237.49 113.03 90)
@@ -2619,12 +2616,6 @@
     (pin "2" (uuid 20d2de86-0593-4706-bd76-f61c2a099062))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "D303") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "D403") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "D201") (unit 1)
         )
@@ -2652,9 +2643,6 @@
       (project "Controller"
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "#PWR0206") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "#PWR0310") (unit 1)
         )
       )
       (project "Pico"
@@ -2857,7 +2845,7 @@
   (symbol (lib_id "power:VBUS") (at 262.89 106.68 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 3d8f3059-d055-42cd-bdb7-d068db3a9eb3)
-    (property "Reference" "#PWR0404" (at 262.89 110.49 0)
+    (property "Reference" "#PWR0219" (at 262.89 110.49 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VBUS" (at 262.89 102.5469 0)
@@ -2872,9 +2860,6 @@
     (pin "1" (uuid 82e325f6-4f40-45ea-b45d-6997bc7ce2e2))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "#PWR0404") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "#PWR0219") (unit 1)
         )
@@ -2902,9 +2887,6 @@
       (project "Controller"
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "#PWR0205") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "#PWR0309") (unit 1)
         )
       )
       (project "Pico"
@@ -2965,9 +2947,6 @@
       (project "Controller"
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "#PWR0213") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "#PWR0311") (unit 1)
         )
       )
       (project "Pico"
@@ -3135,7 +3114,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 80.01 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 5d57f67b-9682-4e1a-9adf-4c870f83a597)
-    (property "Reference" "C401" (at 82.3341 46.2075 0)
+    (property "Reference" "C205" (at 82.3341 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 82.3341 48.6317 0)
@@ -3157,9 +3136,6 @@
     (pin "2" (uuid e559476a-c4f0-4735-b482-9788af82d36f))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C205") (unit 1)
         )
@@ -3354,7 +3330,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 69.85 99.06 0) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 78a01b2e-919a-4bb0-897d-a8466cf7401a)
-    (property "Reference" "C401" (at 67.5259 98.4099 0)
+    (property "Reference" "C209" (at 67.5259 98.4099 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 67.5259 100.3309 0)
@@ -3366,7 +3342,7 @@
     (property "Datasheet" "~" (at 69.85 99.06 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Voltage" "16V" (at 71.12 95.25 0)
+    (property "Voltage" "16V" (at 64.8238 102.0271 0)
       (effects (font (size 0.8 0.8)) (justify left))
     )
     (property "Material" "X5R" (at 69.85 93.98 0)
@@ -3376,9 +3352,6 @@
     (pin "2" (uuid 21b5e933-1d88-4a5d-9309-a8b84b3fb6cf))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C209") (unit 1)
         )
@@ -3435,7 +3408,7 @@
   (symbol (lib_id "Resistors_0402:RESC_0402_187R") (at 233.68 104.14 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 7f7398f9-2550-4094-85ae-4d400ee7168e)
-    (property "Reference" "R409" (at 235.1786 103.1452 0)
+    (property "Reference" "R203" (at 235.1786 103.1452 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "187R" (at 235.1786 105.3521 0)
@@ -3454,9 +3427,6 @@
     (pin "2" (uuid 78279a67-de23-4d1d-9f9e-dd8c93ad75e7))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "R409") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "R203") (unit 1)
         )
@@ -3558,7 +3528,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 49.53 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 8644d494-4661-4662-bc7e-30d5ccb8b512)
-    (property "Reference" "C401" (at 51.8541 46.2075 0)
+    (property "Reference" "C208" (at 51.8541 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 51.8541 48.6317 0)
@@ -3580,9 +3550,6 @@
     (pin "2" (uuid 02197576-0efe-4289-a992-7a1af17c24cf))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C208") (unit 1)
         )
@@ -3692,7 +3659,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_1uF_X5R_10V_0402") (at 114.3 29.21 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid aa87f12f-760e-4314-9981-abd201efa464)
-    (property "Reference" "C401" (at 114.3063 24.638 90)
+    (property "Reference" "C203" (at 114.3063 24.638 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "1uF" (at 114.3063 26.559 90)
@@ -3714,9 +3681,6 @@
     (pin "2" (uuid a3256e3d-0481-44e0-bb52-e605553baf6b))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C203") (unit 1)
         )
@@ -3888,7 +3852,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_1uF_X5R_10V_0402") (at 68.58 71.12 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d7b4f04d-8889-4d4e-a66d-d2b20c07d2df)
-    (property "Reference" "C401" (at 62.23 69.85 0)
+    (property "Reference" "C202" (at 62.23 69.85 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "1uF" (at 62.23 71.61 0)
@@ -3910,9 +3874,6 @@
     (pin "2" (uuid f0828d87-2a08-4226-9608-ef99a006f40a))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C202") (unit 1)
         )
@@ -3963,7 +3924,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 36.83 74.93 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid da6dd73c-88ca-455b-9aa7-b0138097ec81)
-    (property "Reference" "C401" (at 36.8363 67.5556 90)
+    (property "Reference" "C201" (at 36.8363 67.5556 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "100nF" (at 36.8363 69.9798 90)
@@ -3985,14 +3946,8 @@
     (pin "2" (uuid 9065a1d1-3a81-4ef1-921b-210b49e63096))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C201") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "C315") (unit 1)
         )
       )
       (project "Pico"
@@ -4006,7 +3961,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 59.69 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid dc38f27a-21d2-4911-84ef-8b1c9e1b937e)
-    (property "Reference" "C401" (at 62.0141 46.2075 0)
+    (property "Reference" "C207" (at 62.0141 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 62.0141 48.6317 0)
@@ -4028,9 +3983,6 @@
     (pin "2" (uuid 213099a7-1866-42f6-ab48-207b1f76e8a5))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C207") (unit 1)
         )
@@ -4046,7 +3998,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 69.85 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid dd139062-94ed-4040-b6e9-de01b681e142)
-    (property "Reference" "C401" (at 72.1741 46.2075 0)
+    (property "Reference" "C206" (at 72.1741 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 72.1741 48.6317 0)
@@ -4068,9 +4020,6 @@
     (pin "2" (uuid daab9e6b-cb74-4d68-b040-d528f8460fbb))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C206") (unit 1)
         )
@@ -4188,7 +4137,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 85.09 71.12 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid e540d4c6-c877-436d-9501-382c0d5a6384)
-    (property "Reference" "C401" (at 87.4141 69.0675 0)
+    (property "Reference" "C211" (at 87.4141 69.0675 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 87.4141 71.4917 0)
@@ -4210,9 +4159,6 @@
     (pin "2" (uuid c8633641-2b0c-4615-b9cd-a8ce071c1922))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C211") (unit 1)
         )
@@ -4258,7 +4204,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 90.17 48.26 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid e7bfadf3-6a04-47a3-8da4-0a8e9d657b02)
-    (property "Reference" "C401" (at 92.4941 46.2075 0)
+    (property "Reference" "C204" (at 92.4941 46.2075 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 92.4941 48.6317 0)
@@ -4280,9 +4226,6 @@
     (pin "2" (uuid 82041e4f-e49c-407d-9777-4189d416c08c))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C204") (unit 1)
         )
@@ -4358,7 +4301,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 74.93 71.12 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f31887a4-1fb5-4bfd-a0ca-30228469fd7c)
-    (property "Reference" "C401" (at 77.2541 69.0675 0)
+    (property "Reference" "C210" (at 77.2541 69.0675 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "100nF" (at 77.2541 71.4917 0)
@@ -4380,9 +4323,6 @@
     (pin "2" (uuid ce039596-fbfa-4f93-84a9-2d80bbb9de84))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "C210") (unit 1)
         )
@@ -4421,9 +4361,6 @@
       (project "Controller"
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
           (reference "U203") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
-          (reference "U302") (unit 1)
         )
       )
       (project "Pico"

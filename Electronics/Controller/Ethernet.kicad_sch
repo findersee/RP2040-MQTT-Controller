@@ -2429,7 +2429,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 73.66 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 18b559ea-0366-4133-aab1-b44680bac39a)
-    (property "Reference" "C401" (at 73.97 65.8862 0)
+    (property "Reference" "C304" (at 73.97 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 73.97 68.9303 0)
@@ -2451,12 +2451,6 @@
     (pin "2" (uuid f5a02983-9cab-40b2-8e84-4b2e0f6d72c7))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C304") (unit 1)
         )
@@ -2607,7 +2601,7 @@
   (symbol (lib_id "power:GND") (at 88.9 109.22 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 358650b8-8c30-49da-8dd3-27af3251b094)
-    (property "Reference" "#PWR0213" (at 88.9 115.57 0)
+    (property "Reference" "#PWR0312" (at 88.9 115.57 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 88.9 113.3555 0)
@@ -2622,9 +2616,6 @@
     (pin "1" (uuid 36685df7-4ee6-41ed-b957-09422b3f3fb3))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "#PWR0213") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "#PWR0312") (unit 1)
         )
@@ -2689,7 +2680,7 @@
   (symbol (lib_id "power:PWR_FLAG") (at 304.8 45.72 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 465607ff-d65e-4cac-9c06-0c2122024cca)
-    (property "Reference" "#FLG0402" (at 304.8 43.815 0)
+    (property "Reference" "#FLG0301" (at 304.8 43.815 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 304.8 42.2181 0)
@@ -2704,9 +2695,6 @@
     (pin "1" (uuid 75594866-19ac-43c5-a043-664cddf38a41))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "#FLG0402") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "#FLG0301") (unit 1)
         )
@@ -2797,7 +2785,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 68.58 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 55b8ee4a-dc0c-45c5-886f-c9d9b2f8049a)
-    (property "Reference" "C401" (at 68.89 65.8862 0)
+    (property "Reference" "C303" (at 68.89 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 68.89 68.9303 0)
@@ -2819,12 +2807,6 @@
     (pin "2" (uuid 89a4dd82-093c-4946-8ecd-681307521a63))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C303") (unit 1)
         )
@@ -2925,7 +2907,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 78.74 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 649433ae-2cdc-4b6a-8921-269e028d2e0f)
-    (property "Reference" "C401" (at 79.05 65.8862 0)
+    (property "Reference" "C305" (at 79.05 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 79.05 68.9303 0)
@@ -2947,12 +2929,6 @@
     (pin "2" (uuid 763dceb2-30eb-4af6-9b1e-9313759b3f82))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C305") (unit 1)
         )
@@ -3108,7 +3084,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 83.82 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9a7283c1-3899-495a-80cd-9aba9c233abd)
-    (property "Reference" "C401" (at 84.13 65.8862 0)
+    (property "Reference" "C306" (at 84.13 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 84.13 68.9303 0)
@@ -3130,12 +3106,6 @@
     (pin "2" (uuid e80ae9e0-8510-48c8-ac24-0ead47898ce5))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C306") (unit 1)
         )
@@ -3146,7 +3116,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 63.5 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9cf94d96-ad58-469c-9762-3f1f37f6a240)
-    (property "Reference" "C401" (at 63.81 65.8862 0)
+    (property "Reference" "C302" (at 63.81 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 63.81 68.9303 0)
@@ -3168,12 +3138,6 @@
     (pin "2" (uuid 24501178-a082-4583-b5e7-fac47cf56d3c))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C302") (unit 1)
         )
@@ -3184,7 +3148,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 88.9 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9d9cfba4-2546-42b7-8193-f245d599f7b3)
-    (property "Reference" "C401" (at 89.21 65.8862 0)
+    (property "Reference" "C307" (at 89.21 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 89.21 68.9303 0)
@@ -3206,12 +3170,6 @@
     (pin "2" (uuid 544ebfb7-f2f9-412c-aaf4-fe71a6025de7))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C307") (unit 1)
         )
@@ -3522,7 +3480,7 @@
   (symbol (lib_id "Capacitors_0402:CAPC_100nF_X5R_16V_0402") (at 58.42 67.31 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid eda68a3d-3d36-461c-a3fb-d4bafe852ff1)
-    (property "Reference" "C401" (at 58.73 65.8862 0)
+    (property "Reference" "C301" (at 58.73 65.8862 0)
       (effects (font (size 0.8 0.8)) (justify right))
     )
     (property "Value" "100nF" (at 58.73 68.9303 0)
@@ -3544,12 +3502,6 @@
     (pin "2" (uuid 861f076d-8f3e-4a8b-8d2f-6725f81b1c5f))
     (instances
       (project "Controller"
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/7516d84f-d298-4f48-8b5d-a736b2d19d1b"
-          (reference "C401") (unit 1)
-        )
-        (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/b4def931-2d28-466e-81ae-3813755f1fa9"
-          (reference "C214") (unit 1)
-        )
         (path "/a2ea94cb-4178-4727-9ac9-0e597b4a505d/5e10769e-2c76-442d-969e-a77f15adcbc3"
           (reference "C301") (unit 1)
         )

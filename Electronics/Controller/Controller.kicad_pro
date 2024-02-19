@@ -45,7 +45,7 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.18
+          "min_clearance": 0.3
         }
       },
       "diff_pair_dimensions": [
@@ -118,7 +118,7 @@
         "min_hole_to_hole": 0.5,
         "min_microvia_diameter": 0.19999999999999998,
         "min_microvia_drill": 0.09999999999999999,
-        "min_resolved_spokes": 2,
+        "min_resolved_spokes": 1,
         "min_silk_clearance": 0.049999999999999996,
         "min_text_height": 0.6,
         "min_text_thickness": 0.08,
@@ -128,7 +128,7 @@
         "min_via_diameter": 0.5,
         "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
-        "solder_mask_to_copper_clearance": 0.0,
+        "solder_mask_to_copper_clearance": 0.005,
         "use_height_for_length_calcs": true
       },
       "teardrop_options": [
@@ -136,10 +136,10 @@
           "td_allow_use_two_tracks": true,
           "td_curve_segcount": 5,
           "td_on_pad_in_zone": false,
-          "td_onpadsmd": true,
+          "td_onpadsmd": false,
           "td_onroundshapesonly": false,
-          "td_ontrackend": false,
-          "td_onviapad": true
+          "td_ontrackend": true,
+          "td_onviapad": false
         }
       ],
       "teardrop_parameters": [
@@ -563,7 +563,7 @@
       "workbook_filename": ""
     },
     "page_layout_descr_file": "",
-    "plot_directory": "",
+    "plot_directory": "./",
     "spice_adjust_passive_values": false,
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
